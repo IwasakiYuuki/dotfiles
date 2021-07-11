@@ -19,6 +19,7 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'justinmk/vim-dirvish'
 Plug 'plasticboy/vim-markdown'
 Plug 'uarun/vim-protobuf'
+Plug 'hashivim/vim-terraform'
 
 Plug 'tomtom/tlib_vim'
 Plug 'MarcWeber/vim-addon-mw-utils'
@@ -43,6 +44,10 @@ Plug 'cohama/lexima.vim'
 
 call plug#end()
 
+"================
+"General settings
+"================
+set vb t_vb=
 
 "========
 " Window
@@ -85,6 +90,10 @@ set smartcase
 " ESCが押しづらいので"jj"に変更
 inoremap jj <esc>
 
+" US配置だとデフォルトがセミコロンになっているため反転
+nnoremap ; :
+vnoremap ; :
+
 " 検索の際に特殊文字の前の"\"を省略する
 nnoremap / /\v
 vnoremap / /\v
@@ -98,8 +107,8 @@ nnoremap g* g*zz
 nnoremap g# g#zz
 
 " Shift-A, Sで行の左右の端へ
-noremap <S-a> ^
-noremap <S-s> $
+nnoremap <S-a> ^i
+nnoremap <S-s> $a
 
 " インサートモードで移動をctl-jkhlに
 inoremap <C-j> <down>
@@ -129,6 +138,13 @@ nnoremap <leader>5 yypVr-
 nnoremap <leader>6 yypVr^
 nnoremap <leader>7 yypVr"
 
+nnoremap <Leader>s" ciw""<Esc>P
+nnoremap <Leader>s' ciw''<Esc>P
+nnoremap <Leader>s` ciw``<Esc>P
+nnoremap <Leader>s( ciw()<Esc>P
+nnoremap <Leader>s{ ciw{}<Esc>P
+nnoremap <Leader>s[ ciw[]<Esc>P
+
 "====================
 " tagbar
 "====================
@@ -153,3 +169,42 @@ noremap <F7> :NERDTreeToggle<Enter>
 " deoplete
 "=========
 let g:deoplete#enable_at_startup = 1
+
+"=========
+"terraform
+"=========
+let g:terraform_align=1
+let g:terraform_fmt_on_save=1
+
+"=======================
+"Python Linter&Formatter
+"=======================
+function! Preserve(command)
+    " Save the last search.
+    let search = @/
+    " Save the current cursor position.
+    let cursor_position = getpos('.')
+    " Save the current window position.
+    normal! H
+    let window_position = getpos('.')
+    call setpos('.', cursor_position)
+    " Execute the command.
+    execute a:command
+    " Restore the last search.
+    let @/ = search
+    " Restore the previous window position.
+    call setpos('.', window_position)
+    normal! zt
+    " Restore the previous cursor position.
+    call setpos('.', cursor_position)
+endfunction
+
+function! Autopep8()
+    "--ignote=E501: Ignore completing the length of a line."
+    call Preserve(':silent %!autopep8 --aggressive --aggressive -')
+endfunction
+
+augroup python_auto_lint
+  autocmd!
+  autocmd BufWrite *.py :call Autopep8()
+augroup END
