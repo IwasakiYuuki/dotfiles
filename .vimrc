@@ -208,3 +208,8 @@ augroup python_auto_lint
   autocmd!
   autocmd BufWrite *.py :call Autopep8()
 augroup END
+
+"=====
+"CtrlP
+"=====
+let g:ctrlp_show_hidden = 1
