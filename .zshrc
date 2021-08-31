@@ -12,7 +12,7 @@ export PATH=$PATH:/home/yuuki/.local/bin
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="af-magic"
+ZSH_THEME="amuse"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -143,11 +143,13 @@ alias ll='ls -la --color'
 # tmuxinatorのエイリアス
 alias tm='tmuxinator'
 
+alias cll="cl && ll"
+
 export GOOGLE_CLOUD_KEYFILE_JSON=account.json
 export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_CLOUD_KEYFILE_JSON
 
 if [[ ! -n $TMUX ]]; then
-	tm shell-default -n shell
+	tm default-shell -n shell
 fi
 
 # The next line updates PATH for the Google Cloud SDK.
