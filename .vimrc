@@ -47,7 +47,6 @@ call plug#end()
 "================
 "General settings
 "================
-set vb t_vb=
 
 "========
 " Window

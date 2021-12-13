@@ -1,4 +1,4 @@
-# If you come from bash you might have to change your $PATH.
+# If you cme from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
@@ -12,7 +12,8 @@ export PATH=$PATH:/home/yuuki/.local/bin
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="amuse"
+#ZSH_THEME="amuse"
+ZSH_THEME="dst"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -78,6 +79,7 @@ plugins=(
 	git
 	zsh-autosuggestions
 	zsh-syntax-highlighting
+    k
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -134,6 +136,7 @@ bindkey '^]' peco-src
 ############
 # エイリアス
 ############
+alias python='python3'
 # 画面のクリアのエイリアス
 alias cl=clear
 # PECOを使ったGithubへのジャンプ
@@ -142,14 +145,18 @@ alias gh='hub browse $(ghq list | peco | cut -d "/" -f 2,3)'
 alias ll='ls -la --color'
 # tmuxinatorのエイリアス
 alias tm='tmuxinator'
-
-alias cll="cl && ll"
+# kubectlのエイリアス
+alias kg='kubectl get'
+alias kd='kubectl describe'
+alias kl='kubectl logs'
+alias ke='kubectl edit'
+alias ka='kubectl apply'
 
 export GOOGLE_CLOUD_KEYFILE_JSON=account.json
 export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_CLOUD_KEYFILE_JSON
 
 if [[ ! -n $TMUX ]]; then
-	tm default-shell -n shell
+	tm shell-default -n shell
 fi
 
 # The next line updates PATH for the Google Cloud SDK.
@@ -157,3 +164,10 @@ if [ -f '/home/yuuki/google-cloud-sdk/path.zsh.inc' ]; then . '/home/yuuki/googl
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/home/yuuki/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/yuuki/google-cloud-sdk/completion.zsh.inc'; fi
+
+# kubectl auto-completion
+source <(kubectl completion zsh)
+
+# clipboard setting
+LOCAL_IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
+export DISPLAY=$LOCAL_IP:0
