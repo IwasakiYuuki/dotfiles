@@ -155,10 +155,6 @@ alias ka='kubectl apply'
 export GOOGLE_CLOUD_KEYFILE_JSON=account.json
 export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_CLOUD_KEYFILE_JSON
 
-if [[ ! -n $TMUX ]]; then
-	tm shell-default -n shell
-fi
-
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/home/yuuki/google-cloud-sdk/path.zsh.inc' ]; then . '/home/yuuki/google-cloud-sdk/path.zsh.inc'; fi
 
@@ -167,7 +163,3 @@ if [ -f '/home/yuuki/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/yuuki
 
 # kubectl auto-completion
 source <(kubectl completion zsh)
-
-# clipboard setting
-LOCAL_IP=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
-export DISPLAY=$LOCAL_IP:0
