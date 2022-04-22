@@ -1,19 +1,20 @@
-# If you cme from bash you might have to change your $PATH.
+# If you come from bash you might have to change your $PATH.
+#
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/home/yuuki/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 
 # Env settings
 export EDITOR=vim
-export PATH=$PATH:/home/yuuki/.local/bin
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-#ZSH_THEME="amuse"
-ZSH_THEME="dst"
+# ZSH_THEME="robbyrussell"
+ZSH_THEME="af-magic"
+export BAT_THEME="af-magic"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -28,14 +29,13 @@ ZSH_THEME="dst"
 # Case-sensitive completion must be off. _ and - will be interchangeable.
 # HYPHEN_INSENSITIVE="true"
 
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to automatically update without prompting.
-# DISABLE_UPDATE_PROMPT="true"
+# Uncomment one of the following lines to change the auto-update behavior
+# zstyle ':omz:update' mode disabled  # disable automatic updates
+# zstyle ':omz:update' mode auto      # update automatically without asking
+# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 
 # Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
+# zstyle ':omz:update' frequency 13
 
 # Uncomment the following line if pasting URLs and other text is messed up.
 # DISABLE_MAGIC_FUNCTIONS="true"
@@ -50,8 +50,9 @@ ZSH_THEME="dst"
 # ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
-# Caution: this setting can cause issues with multiline prompts (zsh 5.7.1 and newer seem to work)
-# See https://github.com/ohmyzsh/ohmyzsh/issues/5765
+# You can also set it to another string to have that shown instead of the default red dots.
+# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
+# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
 # COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
@@ -76,10 +77,12 @@ ZSH_THEME="dst"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-	git
-	zsh-autosuggestions
-	zsh-syntax-highlighting
+    git
+    zsh-autosuggestions
+    zsh-syntax-highlighting
     k
+    docker
+    docker-compose
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -109,57 +112,68 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+autoload -Uz compinit && compinit
+alias mux=tmuxinator
+export PATH=$PATH:/Applications/MAMP/Library/bin
+export PATH=$HOME/.composer/vendor/bin:$PATH
 
-# Custom settings
-# Ctl-sの無効化
-if [[ -t 0 ]]; then
-  stty stop undef
-  stty start undef
-fi
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# GoのPATH設定
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOPATH/bin
+#=============================
+# fzf-tmux comand
+#=============================
+export FZF_TMUX=1
+export FZF_TMUX_OPTS="-p 80%"
 
-# PECOの設定
-function peco-src () {
-  local selected_dir=$(ghq list -p | peco --query "$LBUFFER")
-  if [ -n "$selected_dir" ]; then
-    BUFFER="cd ${selected_dir}"
-    zle accept-line
-  fi
-  zle clear-screen
+#=============================
+# fzf comand
+#=============================
+# fe - open file with $EDITOR
+fe() {
+    IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
+    [[ -n "$files"  ]] && ${EDITOR:-vim} "${files[@]}"
 }
-zle -N peco-src
-bindkey '^]' peco-src
+# fd - cd to selected directory
+fd() {
+    local dir
+    dir=$(find ${1:-.} -path '*/\.*' -prune \
+        -o -type d -print 2> /dev/null | fzf +m) &&
+    cd "$dir"
+}
+# find-in-file - usage: fif <searchTerm>
+fif() {
+    if [ ! "$#" -gt 0  ]; then echo "Need a string to search for!"; return 1; fi
+    rg --files-with-matches --no-messages "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
+}
+# fh - repeat history
+fh() {
+    eval $( ([ -n "$ZSH_NAME"  ] && fc -l 1 || history) | fzf +s --tac | sed -E 's/ *[0-9]*\*? *//' | sed -E 's/\\/\\\\/g' )
+}
+# fbr - checkout git branch
+fbr() {
+    local branches branch
+    branches=$(git --no-pager branch -vv) &&
+        branch=$(echo "$branches" | fzf-tmux +m) &&
+    git checkout $(echo "$branch" | awk '{print $1}' | sed "s/.* //")
+}
 
-############
-# エイリアス
-############
-alias python='python3'
-# 画面のクリアのエイリアス
-alias cl=clear
-# PECOを使ったGithubへのジャンプ
-alias gh='hub browse $(ghq list | peco | cut -d "/" -f 2,3)'
-# 便利関係
-alias ll='ls -la --color'
-# tmuxinatorのエイリアス
-alias tm='tmuxinator'
-# kubectlのエイリアス
-alias kg='kubectl get'
-alias kd='kubectl describe'
-alias kl='kubectl logs'
-alias ke='kubectl edit'
-alias ka='kubectl apply'
+# fbr - checkout git branch (including remote branches)
+frbr() {
+    local branches branch
+    branches=$(git branch --all | grep -v HEAD) &&
+    branch=$(echo "$branches" |
+        fzf-tmux -d $(( 2 + $(wc -l <<< "$branches")  )) +m) &&
+    git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+}
+export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
 
-export GOOGLE_CLOUD_KEYFILE_JSON=account.json
-export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_CLOUD_KEYFILE_JSON
 
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/home/yuuki/google-cloud-sdk/path.zsh.inc' ]; then . '/home/yuuki/google-cloud-sdk/path.zsh.inc'; fi
+#=============================
+# forgit
+#=============================
+source ~/.forgit
 
-# The next line enables shell command completion for gcloud.
-if [ -f '/home/yuuki/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/yuuki/google-cloud-sdk/completion.zsh.inc'; fi
-
-# kubectl auto-completion
-source <(kubectl completion zsh)
+#=============================
+# Docker
+#=============================
+export DOCKER_CONTENT_TRUST=1
