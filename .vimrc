@@ -7,8 +7,6 @@ call plug#begin()
 "====================================
 " Comment / Uncomment
 Plug 'tpope/vim-commentary'
-" Multi Cursor
-Plug 'terryma/vim-multiple-cursors'
 " Git
 Plug 'tpope/vim-fugitive'
 " Fuzzy finder
@@ -42,6 +40,13 @@ Plug 'mattn/vim-lsp-settings'
 " Async Completion
 " Plug 'prabirshrestha/asyncomplete.vim'
 " Plug 'prabirshrestha/asyncomplete-lsp.vim'
+" Tree
+Plug 'preservim/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'ryanoasis/vim-devicons'
+Plug 'bryanmylee/vim-colorscheme-icons'
+" Tagbar
+Plug 'preservim/tagbar'
 
 "====================================
 " Language plugin
@@ -61,6 +66,8 @@ Plug 'andrewstuart/vim-kubernetes'
 Plug 'hashivim/vim-terraform'
 " Python
 " Plug 'python-mode/python-mode', {'for': 'python', 'branch': 'develop'}
+Plug 'Vimjas/vim-python-pep8-indent'
+Plug 'fisadev/vim-isort'
 " (La)Tex
 Plug 'lervag/vimtex'
 " JavaScript/JSX
@@ -87,10 +94,24 @@ set autoindent
 set expandtab
 set tags=.tags
 set backspace=indent,eol,start
+set encoding=UTF-8
+
+" 括弧の反対をハイライトしない
+let loaded_matchparen=1
 
 " Auto Reload (long span)
 set autoread
 au CursorHold * checktime
+
+augroup CursorLine
+  au!
+  " au VimEnter,WinEnter,bufEnter * highlight CursorLine cterm=underline ctermfg=NONE ctermbg=NONE
+  " au winLeave * highlight CursorLine cterm=NONE ctermfg=NONE ctermbg=NONE
+  au BufEnter * setlocal cursorline
+  au BufEnter * highlight CursorLine cterm=underline ctermfg=NONE ctermbg=NONE
+  au BufLeave * setlocal nocursorline
+augroup END
+hi NerdTreeGitStatusModified guifg=#0000FF guibg=#C0C0C0 ctermfg=21 ctermbg=145
 
 command! Reload :windo e
 nnoremap <F5> :Reload<CR>
@@ -107,20 +128,25 @@ if has("autocmd")
   autocmd FileType html        setlocal sw=2 sts=2 ts=2 et
   autocmd FileType ruby        setlocal sw=2 sts=2 ts=2 et
   autocmd FileType php        setlocal sw=4 sts=4 ts=4 et
+  autocmd FileType sql        setlocal sw=2 sts=2 ts=2 noet
   autocmd FileType js          setlocal sw=4 sts=4 ts=4 et
   autocmd FileType ts          setlocal sw=4 sts=4 ts=4 et
+  autocmd FileType sh         setlocal sw=2 sts=2 ts=2 et
   autocmd FileType zsh         setlocal sw=4 sts=4 ts=4 et
   autocmd FileType python      setlocal sw=4 sts=4 ts=4 et
   autocmd FileType scala       setlocal sw=4 sts=4 ts=4 et
   autocmd FileType json        setlocal sw=4 sts=4 ts=4 et
   autocmd FileType yml        setlocal sw=2 sts=2 ts=2 et
   autocmd FileType yaml        setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType css         setlocal sw=2 sts=2 ts=2 et
+  autocmd FileType css         setlocal sw=4 sts=4 ts=4 et
   autocmd FileType scss        setlocal sw=2 sts=2 ts=2 et
   autocmd FileType sass        setlocal sw=2 sts=2 ts=2 et
   autocmd FileType javascript  setlocal sw=2 sts=2 ts=2 et
   autocmd FileType javascriptreact  setlocal sw=2 sts=2 ts=2 et
   autocmd FileType typescriptreact  setlocal sw=2 sts=2 ts=2 et
+  autocmd FileType markdown         setlocal sw=2 sts=2 ts=2 et
+
+  autocmd BufRead,BufNewFile *.bq setfiletype sql
 endif
 
 " Window
@@ -128,14 +154,18 @@ set splitright
 set splitbelow
 
 " Color
-syntax on
+syntax enable
+let g:solarized_termcolors=256
+" set t_Co=256
 autocmd ColorScheme * highlight Normal ctermbg=none
 autocmd ColorScheme * highlight NonText ctermbg=none
 autocmd ColorScheme * highlight LineNr ctermbg=none
 autocmd ColorScheme * highlight Folded ctermbg=none
 autocmd ColorScheme * highlight EndOfBuffer ctermbg=none
-colorscheme jellybeans
-let g:jellybeans_use_lowcolor_black = 0
+set background=dark
+colorscheme solarized
+" colorscheme jellybeans
+" let g:jellybeans_use_lowcolor_black = 0
 
 "====================================
 " IndentLine
@@ -216,8 +246,8 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
 " <Enter> always means inserting line.
-nnoremap <S-Enter> O<ESC>
-nnoremap <Enter> o<ESC>
+" nnoremap <S-Enter> O<ESC>
+" nnoremap <Enter> o<ESC>
 
 nnoremap <leader>1 yyPVr=jyypVr=
 nnoremap <leader>2 yyPVr*jyypVr*
@@ -248,13 +278,14 @@ let g:terraform_fmt_on_save=1
 nnoremap <C-p> :Files .<CR>
 nnoremap <C-]> :Files ~<CR>
 
+
 "====================================
 " pymode
 "====================================
 let g:pymode_rope = 1
 let g:pymode_rope_complete_on_dot = 0
 let g:pymode_rope_completion_bind = '<C-p>'
-set completeopt=menuone
+set completeopt=menu,menuone,popup,noselect,noinsert
 
 "====================================
 " vimtex
@@ -263,6 +294,14 @@ let g:vimtex_view_method = 'zathura'
 let g:vimtex_syntax_conceal_disable = 1
 "" texのconcealを無効化（#^ω^）
 let g:tex_conceal=''
+
+"====================================
+" markdown
+"====================================
+let g:vim_markdown_no_default_key_mappings = 1
+let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_conceal = 1
+let g:vim_markdown_conceal_code_blocks = 1
 
 "====================================
 " vim-javascript
@@ -324,15 +363,24 @@ augroup lsp_install
     " call s:on_lsp_buffer_enabled only for languages that has the server registered.
     autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
+let g:lsp_log_file = expand('~/vim-lsp.log')
+
+"====================================
+" vim-lsp-settings
+"====================================
+
 
 "====================================
 " ALE
 "====================================
+let g:ale_open_list = 1
 let g:ale_sign_column_always = 1
 let g:airline#extensions#ale#enabled = 1
-let g:ale_completion_enabled = 0
-let g:ale_fix_on_save = 1
+" let g:ale_completion_enabled = 1
+" let g:ale_fix_on_save = 1
 let g:ale_javascript_prettier_use_local_config = 1
+set omnifunc=ale#completion#OmniFunc
+let g:ale_floating_preview = 1
 
 " TypeScript
 let g:ale_linter_aliases = {'typescriptreact': 'typescript'}
@@ -340,6 +388,12 @@ let g:ale_linter_aliases = {'typescriptreact': 'typescript'}
 " PHP
 let g:ale_php_phpcbf_standard = 'PSR2'
 let g:ale_php_phpcs_standard = 'PSR2'
+
+let g:ale_linters = {
+\   'python': ['flake8']
+\}
+
+nmap <silent> <Leader>x <Plug>(ale_fix)
 
 let g:ale_fixers = {
 \   '*': ['remove_trailing_lines', 'trim_whitespace'],
@@ -350,4 +404,81 @@ let g:ale_fixers = {
 \   'html': ['prettier'],
 \   'css': ['prettier'],
 \   'php': ['phpcbf'],
+\   'python': ['autopep8'],
 \}
+
+let g:ale_python_autopep8_options = '--aggressive --aggressive'
+nmap <silent> <C-w>j <Plug>(ale_next_wrap)
+nmap <silent> <C-w>k <Plug>(ale_previous_wrap)
+
+let g:ale_python_pyls_executable = "pylsp"
+
+let g:ale_python_pyls_config = {
+\   'pylsp': {
+\     'plugins': {
+\       'pycodestyle': {
+\         'enabled': v:false,
+\       },
+\       'pyflakes': {
+\         'enabled': v:false,
+\       },
+\       'pydocstyle': {
+\         'enabled': v:false,
+\       },
+\     },
+\   },
+\}
+
+let g:ale_completion_symbols = {
+\ 'text': '',
+\ 'method': '',
+\ 'function': '',
+\ 'constructor': '',
+\ 'field': '',
+\ 'variable': '',
+\ 'class': '',
+\ 'interface': '',
+\ 'module': '',
+\ 'property': '',
+\ 'unit': 'v',
+\ 'value': 'v',
+\ 'enum': 't',
+\ 'keyword': 'v',
+\ 'snippet': 'v',
+\ 'color': 'v',
+\ 'file': 'v',
+\ 'reference': 'v',
+\ 'folder': 'v',
+\ 'enum_member': 'm',
+\ 'constant': 'm',
+\ 'struct': 't',
+\ 'event': 'v',
+\ 'operator': 'f',
+\ 'type_parameter': 'p',
+\ '<default>': 'v'
+\ }
+let g:ale_floating_window_border = ['│', '─', '╭', '╮', '╯', '╰']
+
+"====================================
+" isort
+"====================================
+let g:vim_isort_python_version = 'python3'
+
+"====================================
+" NERDTree
+"====================================
+nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+let g:NERDTreeGitStatusUseNerdFonts = 1 " you should install nerdfonts by yourself. default: 0
+let g:NERDTreeGitStatusUntrackedFilesMode = 'no'
+let g:NERDTreeGitStatusHighlightingCustom = {
+\ 'Modified': 'cterm=NONE ctermfg=yellow ctermbg=NONE gui=NONE guifg=yellow guibg=NONE',
+\ 'Staged': 'cterm=NONE ctermfg=green ctermbg=NONE gui=NONE guifg=green guibg=NONE'
+\ }
+
+"====================================
+" Tagbar
+"====================================
+nnoremap <leader>t :TagbarOpen j<CR>
+nnoremap <C-t> :TagbarToggle<CR>

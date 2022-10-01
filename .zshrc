@@ -83,9 +83,15 @@ plugins=(
     k
     docker
     docker-compose
+    zsh-vi-mode
 )
 
 source $ZSH/oh-my-zsh.sh
+
+#=============================
+# zsh vi mode
+#=============================
+ZVM_VI_INSERT_ESCAPE_BINDKEY=jj
 
 # User configuration
 
@@ -118,6 +124,8 @@ export PATH=$PATH:/Applications/MAMP/Library/bin
 export PATH=$HOME/.composer/vendor/bin:$PATH
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+bindkey -r '\ec'
+bindkey '^J' fzf-cd-widget
 
 #=============================
 # fzf-tmux comand
@@ -129,6 +137,7 @@ export FZF_TMUX_OPTS="-p 80%"
 # fzf comand
 #=============================
 # fe - open file with $EDITOR
+export FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --reverse --bind=ctrl-z:ignore $FZF_DEFAULT_OPTS $FZF_ALT_C_OPTS"
 fe() {
     IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
     [[ -n "$files"  ]] && ${EDITOR:-vim} "${files[@]}"
@@ -153,20 +162,31 @@ fh() {
 fbr() {
     local branches branch
     branches=$(git --no-pager branch -vv) &&
-        branch=$(echo "$branches" | fzf-tmux +m) &&
+        branch=$(echo "$branches" | $(__fzfcmd)) &&
     git checkout $(echo "$branch" | awk '{print $1}' | sed "s/.* //")
 }
-
 # fbr - checkout git branch (including remote branches)
 frbr() {
     local branches branch
     branches=$(git branch --all | grep -v HEAD) &&
-    branch=$(echo "$branches" |
-        fzf-tmux -d $(( 2 + $(wc -l <<< "$branches")  )) +m) &&
+    branch=$(echo "$branches" | $(__fzfcmd) -d $(( 2 + $(wc -l <<< "$branches")  )) +m) &&
     git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
 }
-export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
+# fzf-ghq - cd to ghq directory
+fzf-ghq() {
+    local dir
+    dir="$(ghq list | $(__fzfcmd) +m)"
+    zle push-line
+    BUFFER="cd -- $(ghq root)/$dir"
+    zle accept-line
+}
 
+export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -l -g ""'
+
+zle     -N              fzf-ghq
+bindkey -M  emacs '^O'  fzf-ghq
+bindkey -M  vicmd '^O'  fzf-ghq
+bindkey -M  viins '^O'  fzf-ghq
 
 #=============================
 # forgit
@@ -177,3 +197,32 @@ source ~/.forgit
 # Docker
 #=============================
 export DOCKER_CONTENT_TRUST=1
+
+export PATH="$HOME/.poetry/bin:$PATH"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/private/tmp/google-cloud-sdk/path.zsh.inc' ]; then . '/private/tmp/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/private/tmp/google-cloud-sdk/completion.zsh.inc' ]; then . '/private/tmp/google-cloud-sdk/completion.zsh.inc'; fi
+
+# kubectl completion
+source <(kubectl completion zsh)
+export PATH="$HOME/bin:$PATH"
+
+# gcloud path
+export PATH="$HOME/google-cloud-sdk/bin:$PATH"
+
+# BLAS / LAPACK path
+export LDFLAGS="-L/opt/homebrew/opt/openblas/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/openblas/include"
+export LDFLAGS="-L/opt/homebrew/opt/lapack/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/lapack/include"
+export PKG_CONFIG_PATH="/usr/local/opt/lapack/lib/pkgconfig"
+export CFLAGS=-Wno-error=implicit-function-declaration
+export LAPACK=/usr/local/opt/lapack/lib/liblapack.dylib
+export BLAS=/usr/local/opt/openblas/lib/libopenblasp-r0.3.21.dylib
+
+# Github CLI
+autoload -U compinit
+compinit -i
