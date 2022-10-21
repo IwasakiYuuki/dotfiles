@@ -2,6 +2,7 @@
 " Use junegunn/vim-plug
 call plug#begin()
 
+
 "====================================
 " Basic plugin
 "====================================
@@ -47,7 +48,6 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'bryanmylee/vim-colorscheme-icons'
 " Tagbar
 Plug 'preservim/tagbar'
-
 "====================================
 " Language plugin
 "====================================
