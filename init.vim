@@ -2,6 +2,7 @@ if &compatible
   set nocompatible               " Be iMproved
 endif
 
+
 " Required:
 set runtimepath+=/home/yuuki/.cache/dein/repos/github.com/Shougo/dein.vim
 if dein#load_state('~/.cache/dein')
