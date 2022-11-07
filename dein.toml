@@ -5,6 +5,9 @@ repo = "machakann/vim-sandwich"
 repo = "cohama/lexima.vim"
 
 [[plugins]]
+repo = "Vimjas/vim-python-pep8-indent"
+
+[[plugins]]
 repo = "SirVer/ultisnips"
 hook_add = '''
 let g:UltiSnipsExpandTrigger="<tab>"
@@ -271,7 +274,11 @@ hook_add = '''
 nnoremap <silent><c-p> :Telescope find_files hidden=true<CR>
 nnoremap <silent><c-]> :Telescope find_files cwd=~ hidden=true<CR>
 lua <<EOF
-  require('telescope').setup()
+  require('telescope').setup{
+    defaults = {
+      file_ignore_patterns = {".venv"}
+    }
+  }
 EOF
 '''
 
