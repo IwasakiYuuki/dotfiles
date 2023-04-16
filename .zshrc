@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # If you come from bash you might have to change your $PATH.
 #
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
@@ -6,15 +13,15 @@
 export ZSH="$HOME/.oh-my-zsh"
 
 # Env settings
-export EDITOR=vim
+export EDITOR=nvim
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 # ZSH_THEME="robbyrussell"
-ZSH_THEME="af-magic"
-export BAT_THEME="af-magic"
+# ZSH_THEME="agnoster"
+ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -76,6 +83,11 @@ export BAT_THEME="af-magic"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+
+# zsh-vi-mode pre settings
+ZVM_VI_INSERT_ESCAPE_BINDKEY=jj
+ZVM_INIT_MODE=sourcing
+
 plugins=(
     git
     zsh-autosuggestions
@@ -84,95 +96,31 @@ plugins=(
     docker
     docker-compose
     zsh-vi-mode
+    fzf
 )
-
 source $ZSH/oh-my-zsh.sh
 
-#=============================
-# zsh vi mode
-#=============================
-ZVM_VI_INSERT_ESCAPE_BINDKEY=jj
+# General Settings
+alias zshconf='nvim ~/.zshrc' 
+alias nvimconf='nvim ~/.config/nvim/init.vim' 
+alias qmkkeymap='nvim /mnt/c/Users/2445y/qmk_firmware/keyboards/lily58/keymaps/IwasakiYuuki/keymap.c' 
+export PATH="$HOME/.poetry/bin:$PATH"
 
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-autoload -Uz compinit && compinit
-alias mux=tmuxinator
+# For Mac
 export PATH=$PATH:/Applications/MAMP/Library/bin
 export PATH=$HOME/.composer/vendor/bin:$PATH
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-bindkey -r '\ec'
-bindkey '^J' fzf-cd-widget
+# thefuck
+# https://github.com/nvbn/thefuck
+eval $(thefuck --alias fuck)
 
-#=============================
-# fzf-tmux comand
-#=============================
-export FZF_TMUX=1
-export FZF_TMUX_OPTS="-p 80%"
+# fzf plugins
+# https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/fzf
+export FZF_BASE=$HOME/.fzf/bin/fzf
+export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -l -g ""'
+export FZF_COMPLETION_TRIGGER='**'
+autoload -Uz compinit && compinit
 
-#=============================
-# fzf comand
-#=============================
-# fe - open file with $EDITOR
-export FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --reverse --bind=ctrl-z:ignore $FZF_DEFAULT_OPTS $FZF_ALT_C_OPTS"
-fe() {
-    IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
-    [[ -n "$files"  ]] && ${EDITOR:-vim} "${files[@]}"
-}
-# fd - cd to selected directory
-fd() {
-    local dir
-    dir=$(find ${1:-.} -path '*/\.*' -prune \
-        -o -type d -print 2> /dev/null | fzf +m) &&
-    cd "$dir"
-}
-# find-in-file - usage: fif <searchTerm>
-fif() {
-    if [ ! "$#" -gt 0  ]; then echo "Need a string to search for!"; return 1; fi
-    rg --files-with-matches --no-messages "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
-}
-# fh - repeat history
-fh() {
-    eval $( ([ -n "$ZSH_NAME"  ] && fc -l 1 || history) | fzf +s --tac | sed -E 's/ *[0-9]*\*? *//' | sed -E 's/\\/\\\\/g' )
-}
-# fbr - checkout git branch
-fbr() {
-    local branches branch
-    branches=$(git --no-pager branch -vv) &&
-        branch=$(echo "$branches" | $(__fzfcmd)) &&
-    git checkout $(echo "$branch" | awk '{print $1}' | sed "s/.* //")
-}
-# fbr - checkout git branch (including remote branches)
-frbr() {
-    local branches branch
-    branches=$(git branch --all | grep -v HEAD) &&
-    branch=$(echo "$branches" | $(__fzfcmd) -d $(( 2 + $(wc -l <<< "$branches")  )) +m) &&
-    git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
-}
-# fzf-ghq - cd to ghq directory
 fzf-ghq() {
     local dir
     dir="$(ghq list | $(__fzfcmd) +m)"
@@ -180,40 +128,13 @@ fzf-ghq() {
     BUFFER="cd -- $(ghq root)/$dir"
     zle accept-line
 }
-
-export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -l -g ""'
-
 zle     -N              fzf-ghq
 bindkey -M  emacs '^O'  fzf-ghq
 bindkey -M  vicmd '^O'  fzf-ghq
 bindkey -M  viins '^O'  fzf-ghq
 
-#=============================
-# forgit
-#=============================
-source ~/.forgit
-
-#=============================
 # Docker
-#=============================
 export DOCKER_CONTENT_TRUST=1
-
-export PATH="$HOME/.poetry/bin:$PATH"
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/private/tmp/google-cloud-sdk/path.zsh.inc' ]; then . '/private/tmp/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/private/tmp/google-cloud-sdk/completion.zsh.inc' ]; then . '/private/tmp/google-cloud-sdk/completion.zsh.inc'; fi
-
-# kubectl completion
-source <(kubectl completion zsh)
-export PATH="$HOME/bin:$PATH"
-
-# gcloud path
-export PATH="$HOME/google-cloud-sdk/bin:$PATH"
-
-# BLAS / LAPACK path
 export LDFLAGS="-L/opt/homebrew/opt/openblas/lib"
 export CPPFLAGS="-I/opt/homebrew/opt/openblas/include"
 export LDFLAGS="-L/opt/homebrew/opt/lapack/lib"
@@ -223,6 +144,19 @@ export CFLAGS=-Wno-error=implicit-function-declaration
 export LAPACK=/usr/local/opt/lapack/lib/liblapack.dylib
 export BLAS=/usr/local/opt/openblas/lib/libopenblasp-r0.3.21.dylib
 
-# Github CLI
-autoload -U compinit
-compinit -i
+# gcp
+if [ -f '/private/tmp/google-cloud-sdk/path.zsh.inc' ]; then . '/private/tmp/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f '/private/tmp/google-cloud-sdk/completion.zsh.inc' ]; then . '/private/tmp/google-cloud-sdk/completion.zsh.inc'; fi
+export PATH="$HOME/google-cloud-sdk/bin:$PATH"
+
+# kubectl
+source <(kubectl completion zsh)
+export PATH="$HOME/bin:$PATH"
+
+# Go
+export GOPATH=$HOME/go
+export GOBIN=$GOPATH/bin
+export PATH=$PATH:$GOBIN
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
