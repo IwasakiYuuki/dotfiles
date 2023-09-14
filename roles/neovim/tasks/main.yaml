@@ -1,0 +1,25 @@
+- name: "Get neovim source code"
+  get_url:
+    url: "{{ source_url }}"
+    dest: "{{ xdg_data_home }}/nvim"
+    mode: "744"
+
+- name: "Extract the appimage"
+  shell: |
+    (cd {{ xdg_data_home }} && ./nvim --appimage-extract)
+    rm -rf {{ xdg_data_home  }}/nvim
+
+- name: "Create link to binary file"
+  file:
+    src: "{{ xdg_data_home }}/squashfs-root/usr/bin/nvim"
+    dest: "{{ xdg_bin_home }}/nvim"
+    state: "link"
+
+- name: "Copy neovim setting directory"
+  copy:
+    src: "nvim/"
+    dest: "{{ xdg_config_home }}/nvim"
+
+- name: "Install Dependencies"
+  pip:
+    name: "pynvim"

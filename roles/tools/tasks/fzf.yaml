@@ -1,0 +1,10 @@
+- name: "Clone fzf repository"
+  git:
+    repo: 'https://github.com/junegunn/fzf'
+    dest: "{{ xdg_data_home }}/fzf"
+    version: "0.42.0"
+
+- name: "Install fzf"
+  environment:
+    ZDOTDIR: "{{ xdg_config_home }}/zsh"
+  shell: "{{ xdg_data_home }}/fzf/install --xdg --key-bindings --completion --update-rc"

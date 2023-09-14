@@ -1,6 +1,14 @@
 # Dotfiles
+Automated environment builder using Ansible
+
+### Requirements
+
+- Ansible
+- python3 and pip
 
 ### Install
 ```
-sudo -E bash -c "$(curl -fsSL https://raw.githubusercontent.com/IwasakiYuuki/dotfiles/master/install.sh)"
+git clone https://github.com/IwasakiYuuki/dotfiles
+cd dotfiles
+sudo -E ansible-playbook -i localhost, -c local setup.yaml
 ```

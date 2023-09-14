@@ -1,0 +1,5 @@
+- name: "Install ghq"
+  shell: |
+    export GOPATH={{ xdg_config_home }}
+    export GOBIN={{ xdg_bin_home }}
+    {{ xdg_bin_home }}/go install github.com/x-motemen/ghq@latest

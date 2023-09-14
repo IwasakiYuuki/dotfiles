@@ -1,0 +1,26 @@
+- name: "Install zsh"
+  apt:
+    name: "zsh"
+    state: "present"
+
+- name: "Copy zsh env file to home dir"
+  copy:
+    src: "zsh/{{ item }}"
+    dest: "{{ lookup('env', 'HOME') }}/{{ item }}"
+  with_items:
+    - .zshenv
+
+- name: "Create zsh config dir"
+  file:
+    path: "{{ xdg_config_home }}/zsh"
+    state: "directory"
+
+- name: "Copy zsh setting files to config dir"
+  copy:
+    src: "zsh/{{ item }}"
+    dest: "{{ xdg_config_home }}/zsh/{{ item }}"
+  with_items:
+    - .zshrc
+
+- name: "Change default shell"
+  shell: "chsh -s /usr/bin/zsh"
