@@ -9,4 +9,5 @@
     - common
     - neovim
     - zsh
+    - tmux
     - tools

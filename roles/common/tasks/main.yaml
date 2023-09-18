@@ -10,11 +10,13 @@
     - "{{ xdg_bin_home }}"
 
 - name: "Install build tools"
+  become: yes
   apt:
     name: "build-essential"
     state: "present"
 
 - name: "Install searcher"
+  become: yes
   apt:
     name: "silversearcher-ag"
     state: "present"

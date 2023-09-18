@@ -1,0 +1,26 @@
+- name: "Install tmux"
+  become: yes
+  apt:
+    name: tmux
+    state: "present"
+
+- name: "Create tmux plugins directory"
+  file:
+    path: "{{ lookup('env', 'HOME') }}/.tmux/plugins"
+    state: "directory"
+
+- name: "Install tpt"
+  git:
+    repo: "https://github.com/tmux-plugins/tpm"
+    dest: "{{ lookup('env', 'HOME') }}/.tmux/plugins/tpm"
+
+- name: "Copy tmux setting directory"
+  copy:
+    src: "tmux/.tmux.conf"
+    dest: "{{ lookup('env', 'HOME') }}/.tmux.conf"
+
+- name: "Install Tmuxinator"
+  shell: |
+    if ! command -v tmuxinator >/dev/null 2>&1; then
+      gem install --user-install --bindir {{ xdg_bin_home }} tmuxinator
+    fi

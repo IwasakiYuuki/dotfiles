@@ -1,0 +1,28 @@
+{
+    "workspace.library": [
+        "/home/yuuki/.config/nvim",
+        "/home/yuuki/.local/share/nvim/lazy/lazy.nvim",
+        "/home/yuuki/.local/share/nvim/lazy/nvim-lspconfig",
+        "/home/yuuki/.local/share/nvim/lazy/mason-lspconfig.nvim",
+        "/home/yuuki/.local/share/nvim/lazy/nvim-web-devicons",
+        "/home/yuuki/.local/share/nvim/lazy/cmp-path",
+        "/home/yuuki/.local/share/nvim/lazy/nvim-cmp",
+        "/home/yuuki/.local/share/nvim/lazy/indent-blankline.nvim",
+        "/home/yuuki/.local/share/nvim/lazy/cmp-cmdline",
+        "/home/yuuki/.local/share/nvim/lazy/cmp-buffer",
+        "/home/yuuki/.local/share/nvim/lazy/lualine.nvim",
+        "/home/yuuki/.local/share/nvim/lazy/nvim-treesitter",
+        "/home/yuuki/.local/share/nvim/lazy/yaml.nvim",
+        "/home/yuuki/.local/share/nvim/lazy/telescope.nvim",
+        "/home/yuuki/.local/share/nvim/lazy/cmp-nvim-lsp",
+        "/home/yuuki/.local/share/nvim/lazy/mason.nvim",
+        "/home/yuuki/.local/share/nvim/lazy/tokyonight.nvim",
+        "/usr/share/nvim/runtime",
+        "/home/yuuki/.local/state/nvim/lazy/readme",
+        "/home/yuuki/.local/share/nvim/lazy/cmp-path/after",
+        "/home/yuuki/.local/share/nvim/lazy/cmp-cmdline/after",
+        "/home/yuuki/.local/share/nvim/lazy/cmp-buffer/after",
+        "/home/yuuki/.local/share/nvim/lazy/cmp-nvim-lsp/after",
+        "${3rd}/luassert/library"
+    ]
+}
