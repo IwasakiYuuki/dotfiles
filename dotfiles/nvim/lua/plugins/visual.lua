@@ -1,10 +1,10 @@
 return {
   {
     "catppuccin/nvim",
+    name = "catppuccin",
     config = function ()
       require("catppuccin").setup({
-        flavour = "mocha",
-        term_colors = true,
+        flavour = "macchiato",
         integrations = {
           cmp = true,
           telescope = true,
@@ -25,11 +25,10 @@ return {
   },
   {
     "lukas-reineke/indent-blankline.nvim",
+    main = "ibl",
+    opts = {},
     config = function()
-      require("indent_blankline").setup({
-        show_current_context = true,
-        show_current_context_start = true,
-      })
+      require("ibl").setup({})
     end,
   },
   {
@@ -42,5 +41,22 @@ return {
       require("noice").setup({
       })
     end,
+  },
+  {
+    "nvim-zh/colorful-winsep.nvim",
+    config = true,
+    event = { "WinNew" },
+  },
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
+      "MunifTanjim/nui.nvim",
+    },
+    config = function ()
+      require("neo-tree").setup({})
+      vim.keymap.set("n", "<C-n>", "<cmd>Neotree toggle<CR>")
+    end
   }
 }

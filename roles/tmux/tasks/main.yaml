@@ -1,23 +1,47 @@
-- name: "Install tmux"
+# tmux wiki (github)
+# https://github.com/tmux/tmux/wiki/Installing
+
+- name: "Install Dependencies"
   become: yes
   apt:
-    name: tmux
+    name:
+      - libevent-dev
+      - ncurses-dev
+      - build-essential
+      - bison
+      - pkg-config
     state: "present"
 
-- name: "Create tmux plugins directory"
+- name: "Download source code"
+  get_url:
+    url: "{{ source_url }}"
+    dest: "{{ xdg_cache_home }}/{{ source_name }}.tar.gz"
+
+- name: "Install tmux (1/2)"
+  shell: |
+    (cd {{ xdg_cache_home }} && tar -zxf {{ source_name }}.tar.gz)
+    (cd {{ xdg_cache_home }}/{{ source_name }} && ./configure)
+    (cd {{ xdg_cache_home }}/{{ source_name }} && make)
+
+- name: "Install tmux (2/2)"
+  become: yes
+  shell: |
+    (cd {{ xdg_cache_home }}/{{ source_name }} && make install)
+
+- name: "Create plugin manager directory"
   file:
-    path: "{{ lookup('env', 'HOME') }}/.tmux/plugins"
+    path: "{{ xdg_config_home }}/tmux/plugins"
     state: "directory"
 
-- name: "Install tpt"
+- name: "Download plugin manager"
   git:
     repo: "https://github.com/tmux-plugins/tpm"
-    dest: "{{ lookup('env', 'HOME') }}/.tmux/plugins/tpm"
+    dest: "{{ xdg_config_home }}/tmux/plugins/tpm"
 
-- name: "Copy tmux setting directory"
+- name: "Copy tmux setting"
   copy:
     src: "tmux/.tmux.conf"
-    dest: "{{ lookup('env', 'HOME') }}/.tmux.conf"
+    dest: "{{ xdg_config_home }}/tmux/tmux.conf"
 
 - name: "Install Tmuxinator"
   shell: |

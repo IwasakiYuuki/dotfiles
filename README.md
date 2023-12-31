@@ -10,5 +10,5 @@ Automated environment builder using Ansible
 ```
 git clone https://github.com/IwasakiYuuki/dotfiles
 cd dotfiles
-sudo -E ansible-playbook -i localhost, -c local setup.yaml
+ansible-playbook -i localhost, -c local setup.yaml --ask-become-pass
 ```

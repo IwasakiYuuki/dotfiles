@@ -1,4 +1,5 @@
 vim.o.number = true
+vim.o.relativenumber = true
 vim.o.encoding = 'UTF-8'
 vim.o.ignorecase = true
 vim.o.smartcase = true
@@ -6,8 +7,7 @@ vim.o.splitright = true
 vim.o.splitbelow = true
 vim.o.laststatus = 3
 vim.o.clipboard = "unnamedplus"
-vim.o.termguicolors = true
-vim.o.pumblend = true
+vim.o.pumblend = false
 vim.o.exrc = true
 
 if vim.fn.has("wsl") == 1 then
@@ -24,3 +24,8 @@ if vim.fn.has("wsl") == 1 then
     cache_enabled = 0,
   }
 end
+
+-- vim.cmd 'highlight Normal guibg=NONE ctermbg=NONE'
+-- vim.cmd 'highlight NormalNC guibg=NONE ctermbg=NONE'
+-- vim.cmd 'highlight NonText guibg=NONE ctermbg=NONE'
+-- vim.cmd 'highlight EndOfBuffer guibg=NONE ctermbg=NONE'

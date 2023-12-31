@@ -2,7 +2,10 @@ return {
   {
     "akinsho/toggleterm.nvim",
     config = function ()
-      require("toggleterm").setup { size = 30 }
+      require("toggleterm").setup {
+        size = 30,
+        shade_terminals = false
+      }
       vim.api.nvim_create_autocmd({"TermEnter"}, {
         pattern = {"term://*toggleterm#*"},
         callback = function ()

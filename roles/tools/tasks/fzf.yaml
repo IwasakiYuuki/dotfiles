@@ -2,7 +2,7 @@
   git:
     repo: 'https://github.com/junegunn/fzf'
     dest: "{{ xdg_data_home }}/fzf"
-    version: "0.42.0"
+    version: "0.44.1"
 
 - name: "Install fzf"
   environment:

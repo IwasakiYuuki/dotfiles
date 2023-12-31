@@ -8,39 +8,20 @@ return {
   {
     "williamboman/mason-lspconfig.nvim",
     config = function()
+      require("mason-lspconfig").setup()
       require("mason-lspconfig").setup_handlers{
-        function (server_name)
-          local opts = {}
-          if server_name == "pyright" then
-            opts.settings = {
+        ["pyright"] = function()
+          require("lspconfig").pyright.setup {
+            settings = {
               python = {
                 pythonPath = ".venv/bin/python",
               }
             }
-          elseif server_name == "lua_ls" then
-            opts.settings = {
-              Lua = {
-                completion = {
-                  autoRequire = false
-                },
-                runtime = {
-                  version = 'LuaJIT',
-                },
-                diagnostics = {
-                  globals = {'vim'},
-                },
-                workspace = {
-                  library = vim.api.nvim_get_runtime_file("", true),
-                  checkThirdParty = false,
-                },
-                telemetry = {
-                  enable = false,
-                },
-              },
-            }
-          end
-          require("lspconfig")[server_name].setup {opts}
-        end
+          }
+        end,
+        function(server_name)
+          require('lspconfig')[server_name].setup {}
+        end,
       }
     end
   },
@@ -54,82 +35,70 @@ return {
       vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
       vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
       vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
-
-      -- -- Use an on_attach function to only map the following keys
-      -- -- after the language server attaches to the current buffer
-      -- local on_attach = function(client, bufnr)
-      --   -- Enable completion triggered by <c-x><c-o>
-      --   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-      --   -- Mappings.
-      --   -- See `:help vim.lsp.*` for documentation on any of the below functions
-      --   local bufopts = { noremap=true, silent=true, buffer=bufnr }
-      --   vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-      --   vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
-      --   vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-      --   vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
-      --   -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
-      --   vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
-      --   vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
-      --   vim.keymap.set('n', '<space>wl', function()
-      --     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-      --   end, bufopts)
-      --   vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
-      --   vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
-      --   vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
-      --   vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-      --   vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
-      -- end
-
-      -- local lsp_flags = {
-      --   -- This is the default in Nvim 0.7+
-      --   debounce_text_changes = 150,
-      -- }
-      -- require('lspconfig')['pyright'].setup {
-      --   on_attach = on_attach,
-      --   flags = lsp_flags,
-      --   settings = {
-      --     python = {
-      --       pythonPath = ".venv/bin/python",
-      --     }
-      --   }
-      -- }
-      -- require('lspconfig')['lua_ls'].setup {
-      --   on_attach = on_attach,
-      --   flags = lsp_flags,
-      --   settings = {
-      --     Lua = {
-      --       completion = {
-      --         autoRequire = false
-      --       },
-      --       runtime = {
-      --         version = 'LuaJIT',
-      --       },
-      --       diagnostics = {
-      --         globals = {'vim'},
-      --       },
-      --       workspace = {
-      --         library = vim.api.nvim_get_runtime_file("", true),
-      --         checkThirdParty = false,
-      --       },
-      --       telemetry = {
-      --         enable = false,
-      --       },
-      --     },
-      --   },
-      -- }
-      -- require('lspconfig')['rust_analyzer'].setup {
-      --   on_attach = on_attach,
-      --   flags = lsp_flags,
-      -- }
-      -- require('lspconfig')['pylsp'].setup {
-      --   on_attach = on_attach,
-      --   flags = lsp_flags,
-      -- }
-      -- require('lspconfig')['terraform-ls'].setup {
-      --   on_attach = on_attach,
-      --   flags = lsp_flags,
-      -- }
     end
   },
+  {
+    'simrat39/symbols-outline.nvim',
+    config = function()
+      require('symbols-outline').setup()
+      vim.keymap.set('n', '<C-s>', '<cmd>SymbolsOutline<cr>')
+    end
+  },
+  {
+    "mfussenegger/nvim-dap",
+    config = function()
+      vim.keymap.set('n', '<F6>', function() require('dap').continue() end)
+      vim.keymap.set('n', '<F10>', function() require('dap').step_over() end)
+      vim.keymap.set('n', '<F11>', function() require('dap').step_into() end)
+      vim.keymap.set('n', '<F12>', function() require('dap').step_out() end)
+      vim.keymap.set('n', '<Leader>b', function() require('dap').toggle_breakpoint() end)
+      vim.keymap.set('n', '<Leader>c', function() require('dap').clear_breakpoints() end)
+      vim.keymap.set('n', '<Leader>B', function() require('dap').set_breakpoint() end)
+      vim.keymap.set('n', '<Leader>lp', function() require('dap').set_breakpoint(nil, nil, vim.fn.input('Log point message: ')) end)
+      vim.keymap.set('n', '<Leader>dr', function() require('dap').repl.open() end)
+      vim.keymap.set('n', '<Leader>dl', function() require('dap').run_last() end)
+      vim.keymap.set({'n', 'v'}, '<Leader>dh', function()
+        require('dap.ui.widgets').hover()
+      end)
+      vim.keymap.set({'n', 'v'}, '<Leader>dp', function()
+        require('dap.ui.widgets').preview()
+      end)
+      vim.keymap.set('n', '<Leader>df', function()
+        local widgets = require('dap.ui.widgets')
+        widgets.centered_float(widgets.frames)
+      end)
+      vim.keymap.set('n', '<Leader>ds', function()
+        local widgets = require('dap.ui.widgets')
+        widgets.centered_float(widgets.scopes)
+      end)
+    end
+  },
+  {
+    "rcarriga/nvim-dap-ui",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+    },
+    config = function()
+      require("dapui").setup()
+      vim.keymap.set('n', '<F5>', function() require('dapui').toggle() end)
+    end,
+  },
+  {
+    -- https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation
+    "jay-babu/mason-nvim-dap.nvim",
+    dependencies = {
+      "williamboman/mason.nvim",
+      "mfussenegger/nvim-dap",
+    },
+    config = function()
+      require("mason").setup()
+      require("mason-nvim-dap").setup({
+        handlers = {
+            function(config)
+              require('mason-nvim-dap').default_setup(config)
+            end,
+        },
+      })
+    end,
+  }
 }

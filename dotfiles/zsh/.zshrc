@@ -11,12 +11,18 @@ path+=(
     "${HOME}/.local/bin"
 )
 
+# General history
+setopt appendhistory
+setopt sharehistory
+setopt incappendhistory
+setopt hist_ignore_dups
+
 # Plugins
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-autosuggestions
 zinit light zsh-users/zsh-completions
 
-## history
+## history search
 zinit light zdharma/history-search-multi-word
 zstyle :plugin:history-search-multi-word reset-prompt-protect 1
 zstyle ":history-search-multi-word" highlight-color "fg=red,bold"
@@ -54,3 +60,13 @@ export ZVM_VI_INSERT_ESCAPE_BINDKEY=jj
 
 ## fzf
 export FZF_CTRL_T_COMMAND='ag --hidden --ignore .git -g ""'
+
+## nvm
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+## pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
