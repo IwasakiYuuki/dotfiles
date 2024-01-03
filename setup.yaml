@@ -1,10 +1,11 @@
 - hosts: localhost
   vars:
-    xdg_cache_home: "{{ lookup('env', 'XDG_CACHE_HOME') | default('$HOME/.cache', true) }}"
-    xdg_config_home: "{{ lookup('env', 'XDG_CONFIG_HOME') | default('$HOME/.config', true) }}"
-    xdg_data_home: "{{ lookup('env', 'XDG_DATA_HOME') | default('$HOME/.local/share', true) }}"
-    xdg_state_home: "{{ lookup('env', 'XDG_STATE_HOME') | default('$HOME/.local/state', true) }}"
-    xdg_bin_home: "{{ lookup('env', 'XDG_BIN_HOME') | default('$HOME/.local/bin', true) }}"
+    user_home: "{{ lookup('env', 'HOME') }}"
+    xdg_cache_home: "{{ lookup('env', 'XDG_CACHE_HOME') | default(user_home + '/.cache', true) }}"
+    xdg_config_home: "{{ lookup('env', 'XDG_CONFIG_HOME') | default(user_home + '/.config', true) }}"
+    xdg_data_home: "{{ lookup('env', 'XDG_DATA_HOME') | default(user_home + '/.local/share', true) }}"
+    xdg_state_home: "{{ lookup('env', 'XDG_STATE_HOME') | default(user_home + '/.local/state', true) }}"
+    xdg_bin_home: "{{ lookup('env', 'XDG_BIN_HOME') | default(user_home + '/.local/bin', true) }}"
   roles:
     - common
     - neovim
