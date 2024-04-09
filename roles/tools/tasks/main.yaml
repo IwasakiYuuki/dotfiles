@@ -3,3 +3,12 @@
 
 - name: "ghq"
   include_tasks: ghq.yaml
+
+- name: "pyenv"
+  include_tasks: pyenv.yaml
+
+- name: "lazygit"
+  include_tasks: lazygit.yaml
+
+- name: "nvm"
+  include_tasks: nvm.yaml

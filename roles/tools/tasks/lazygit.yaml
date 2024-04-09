@@ -1,0 +1,8 @@
+# TODO: Debian install
+
+- name: "Install Lazygit (Archlinux)"
+  become: yes
+  pacman:
+    name: "lazygit"
+    state: "present"
+  when: ansible_facts['os_family'] == "Archlinux"

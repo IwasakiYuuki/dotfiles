@@ -42,11 +42,11 @@ return {
       })
     end,
   },
-  {
-    "nvim-zh/colorful-winsep.nvim",
-    config = true,
-    event = { "WinNew" },
-  },
+  -- {
+  --   "nvim-zh/colorful-winsep.nvim",
+  --   config = true,
+  --   event = { "WinNew" },
+  -- },
   {
     "nvim-neo-tree/neo-tree.nvim",
     dependencies = {

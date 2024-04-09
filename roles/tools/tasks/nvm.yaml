@@ -1,0 +1,16 @@
+- name: "Install nvm"
+  ansible.builtin.shell: >
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+  args:
+    creates: "{{ xdg_config_home }}/nvm/nvm.sh"
+
+- name: "Ensure a file has execute permission"
+  file:
+    path: "{{ xdg_config_home }}/nvm/nvm.sh"
+    mode: "a+x"
+
+- name: "Create link to binary file"
+  file:
+    src: "{{ xdg_config_home }}/nvm/nvm.sh"
+    dest: "{{ xdg_bin_home }}/nvm"
+    state: "link"

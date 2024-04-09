@@ -1,0 +1,16 @@
+- name: "Check install directory"
+  stat:
+    path: "{{ xdg_data_home }}/pyenv"
+  register: directory_status
+
+- name: "Install pyenv"
+  shell: |
+    export PYENV_ROOT={{ xdg_data_home }}/pyenv
+    curl https://pyenv.run | bash
+  when: not directory_status.stat.exists
+
+- name: "Create link to binary file"
+  file:
+    src: "{{ xdg_data_home }}/pyenv/bin/pyenv"
+    dest: "{{ xdg_bin_home }}/pyenv"
+    state: "link"

@@ -13,3 +13,5 @@ export GOBIN=${HOME}/.local/bin
 export GOPATH=${XDG_DATE_HOME}/go
 
 export ZDOTDIR=${XDG_CONFIG_HOME}/zsh
+
+export EDITOR=nvim

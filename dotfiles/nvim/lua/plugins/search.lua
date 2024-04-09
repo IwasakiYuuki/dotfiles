@@ -4,7 +4,7 @@ return {
   },
   {
     "nvim-telescope/telescope.nvim",
-    tag = "0.1.1",
+    tag = "0.1.6",
     dependencies = { "nvim-lua/plenary.nvim", "rcarriga/nvim-notify" },
     config = function()
       require("telescope").setup {

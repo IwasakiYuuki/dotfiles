@@ -1,8 +1,16 @@
-- name: "Install zsh"
+- name: "Install zsh (Debian)"
   become: yes
   apt:
     name: "zsh"
     state: "present"
+  when: ansible_facts['os_family'] == "Debian"
+  
+- name: "Install zsh (Archlinux)"
+  become: yes
+  pacman:
+    name: "zsh"
+    state: "present"
+  when: ansible_facts['os_family'] == "Archlinux"
 
 - name: "Copy zsh env file to home dir"
   copy:
@@ -16,6 +24,11 @@
     path: "{{ xdg_config_home }}/zsh"
     state: "directory"
 
+- name: "Create zsh state dir"
+  file:
+    path: "{{ xdg_state_home }}/zsh"
+    state: "directory"
+
 - name: "Copy zsh setting files to config dir"
   copy:
     src: "zsh/{{ item }}"
@@ -25,4 +38,6 @@
 
 - name: "Change default shell"
   become: yes
-  shell: "chsh -s /usr/bin/zsh"
+  user:
+    name: "{{ ansible_env.USER }}"
+    shell: "/usr/bin/zsh"
