@@ -1,4 +1,18 @@
 return {
+	{
+		"zbirenbaum/copilot.lua",
+		cmd = "Copilot",
+		event = "InsertEnter",
+		config = function()
+			require("copilot").setup({})
+		end,
+	},
+  {
+    "zbirenbaum/copilot-cmp",
+    config = function ()
+      require("copilot_cmp").setup()
+    end
+  },
   {
     "hrsh7th/cmp-nvim-lsp",
   },
@@ -36,7 +50,9 @@ return {
         }),
         sources = cmp.config.sources({
           { name = 'nvim_lsp' },
-          { name = 'ultisnips' }, -- For ultisnips users.
+          { name = 'ultisnips' },
+          { name = 'path' },
+          { name = "copilot", group_index = 2 },
         }, {
           { name = 'buffer' },
         }),

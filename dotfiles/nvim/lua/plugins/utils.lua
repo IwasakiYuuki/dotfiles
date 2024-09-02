@@ -25,7 +25,7 @@ return {
       require('treesj').setup({--[[ your config ]]})
     end,
   },
-  {
-    'github/copilot.vim',
-  }
+  -- {
+  --   'github/copilot.vim',
+  -- }
 }

@@ -19,6 +19,13 @@ return {
             }
           }
         end,
+        ["tsserver"] = function()
+          require("lspconfig").tsserver.setup {
+            settings = {
+              format = true,
+            }
+          }
+        end,
         function(server_name)
           require('lspconfig')[server_name].setup {}
         end,
