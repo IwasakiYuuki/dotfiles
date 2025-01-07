@@ -25,7 +25,10 @@ if vim.fn.has("wsl") == 1 then
   }
 end
 
--- vim.cmd 'highlight Normal guibg=NONE ctermbg=NONE'
--- vim.cmd 'highlight NormalNC guibg=NONE ctermbg=NONE'
--- vim.cmd 'highlight NonText guibg=NONE ctermbg=NONE'
--- vim.cmd 'highlight EndOfBuffer guibg=NONE ctermbg=NONE'
+vim.cmd 'highlight Normal guibg=NONE ctermbg=NONE'
+vim.cmd 'highlight NormalNC guibg=NONE ctermbg=NONE'
+vim.cmd 'highlight NonText guibg=NONE ctermbg=NONE'
+vim.cmd 'highlight Folded guibg=NONE ctermbg=NONE'
+vim.cmd 'highlight EndOfBuffer guibg=NONE ctermbg=NONE'
+vim.cmd 'highlight NvimTreeNormal guibg=NONE ctermbg=NONE'
+vim.cmd 'highlight NvimTreeNormalNC guibg=NONE ctermbg=NONE'
