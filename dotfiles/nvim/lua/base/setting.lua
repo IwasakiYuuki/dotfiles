@@ -7,7 +7,7 @@ vim.o.splitright = true
 vim.o.splitbelow = true
 vim.o.laststatus = 3
 vim.o.clipboard = "unnamedplus"
-vim.o.pumblend = false
+vim.o.pumblend = 0
 vim.o.exrc = true
 
 if vim.fn.has("wsl") == 1 then

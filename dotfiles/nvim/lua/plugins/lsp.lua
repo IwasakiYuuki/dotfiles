@@ -19,7 +19,7 @@ return {
             }
           }
         end,
-        ["tsserver"] = function()
+        ["ts_ls"] = function()
           require("lspconfig").tsserver.setup {
             settings = {
               format = true,
