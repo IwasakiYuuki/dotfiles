@@ -27,6 +27,15 @@ return {
     end
   },
   {
+    "rcarriga/nvim-notify",
+    config = function ()
+      require("notify").setup({
+        fps = 60,
+        stages = "static"
+      })
+    end
+  },
+  {
     "phaazon/hop.nvim",
     config = function()
       local hop = require('hop')

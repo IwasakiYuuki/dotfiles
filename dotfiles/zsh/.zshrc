@@ -75,3 +75,6 @@ export NVM_DIR="$HOME/.config/nvm"
 ## pyenv
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
+
+## LLM API key
+[ -s "$HOME/.llm/api_key.sh" ] && source "$HOME/.llm/api_key.sh"
